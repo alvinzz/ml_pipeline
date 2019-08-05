@@ -3,28 +3,28 @@ from model import Model
 import tensorflow as tf
 
 class TF_MLP_Model(Model):
-	param_type = "TF_MLP_Model"
+    param_type = "TF_MLP_Model"
 
     def __init__(self):
-    	self.in_size = 1
-    	self.hidden_sizes = [1]
-    	self.out_size = 1
+        self.in_size = 1
+        self.hidden_sizes = [1]
+        self.out_size = 1
 
         self.activation = 'relu'
 
     def update_parameters(self):
         self.params = {
-        	'param_type': TF_MLP_Model.param_type,
+            'param_type': TF_MLP_Model.param_type,
 
-        	'in_size': self.in_size,
-        	'hidden_sizes': self.hidden_sizes,
-        	'out_size': self.out_size,
+            'in_size': self.in_size,
+            'hidden_sizes': self.hidden_sizes,
+            'out_size': self.out_size,
 
             'activation': self.activation,
         }
 
     def build_model(self):
-    	if not hasattr(self, 'model'):
+        if not hasattr(self, 'model'):
             layers = []
 
             for layer in range(len(self.hidden_sizes) + 1):
@@ -35,7 +35,7 @@ class TF_MLP_Model(Model):
                     layers.append(tf.keras.layers.Dense(self.out_size))
                 else:
                     layers.append(tf.keras.layers.Dense(self.hidden_sizes[layer]))
-    		
+            
             self.model = tf.keras.Sequential(layers)
 
     def predict(self, input):

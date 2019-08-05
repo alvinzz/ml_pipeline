@@ -9,54 +9,54 @@ from tf_losses import mse_loss
 
 # create dataset & example parser
 def create_xor_dataset():
-	x = np.array([[0,0], [0,1], [1,0], [1,1]]).astype(np.float32)
-	y = np.array([[0], [1], [1], [0]]).astype(np.float32)
+    x = np.array([[0,0], [0,1], [1,0], [1,1]]).astype(np.float32)
+    y = np.array([[0], [1], [1], [0]]).astype(np.float32)
 
-	def gen_example(x, y):
-		feature = {
-		  'feature': tf.train.Feature(float_list=tf.train.FloatList(value=x.tolist())),
-		  'label': tf.train.Feature(float_list=tf.train.FloatList(value=y.tolist())),
-		}
-		return tf.train.Example(features=tf.train.Features(feature=feature))
+    def gen_example(x, y):
+        feature = {
+          'feature': tf.train.Feature(float_list=tf.train.FloatList(value=x.tolist())),
+          'label': tf.train.Feature(float_list=tf.train.FloatList(value=y.tolist())),
+        }
+        return tf.train.Example(features=tf.train.Features(feature=feature))
 
-	record_file = 'xor.tfrecords'
-	with tf.io.TFRecordWriter(record_file) as writer:
-	    for (_x, _y) in zip(x, y):
-	        example = gen_example(_x, _y)
-	        writer.write(example.SerializeToString())
+    record_file = 'xor.tfrecords'
+    with tf.io.TFRecordWriter(record_file) as writer:
+        for (_x, _y) in zip(x, y):
+            example = gen_example(_x, _y)
+            writer.write(example.SerializeToString())
 
 def xor_example_parser(example):
-	feature_description = {
-	    'feature': tf.io.FixedLenFeature([2], tf.float32),
-	    'label': tf.io.FixedLenFeature([1], tf.float32),
-	}
-	return tf.io.parse_single_example(example, feature_description)
+    feature_description = {
+        'feature': tf.io.FixedLenFeature([2], tf.float32),
+        'label': tf.io.FixedLenFeature([1], tf.float32),
+    }
+    return tf.io.parse_single_example(example, feature_description)
 
 # define experiment
 def setup_experiment():
-	XOR_experiment = Experiment()
+    XOR_experiment = Experiment()
 
-	XOR_model = TF_MLP_Model()
-	XOR_experiment.model = XOR_model
+    XOR_model = TF_MLP_Model()
+    XOR_experiment.model = XOR_model
 
-	XOR_trainer = TF_Trainer()
-	XOR_trainer.example_parser = xor_example_parser
-	XOR_trainer.loss = mse_loss
-	XOR_experiment.trainer = XOR_trainer
+    XOR_trainer = TF_Trainer()
+    XOR_trainer.example_parser = xor_example_parser
+    XOR_trainer.loss = mse_loss
+    XOR_experiment.trainer = XOR_trainer
 
 def get_hyperparams():
-	if glob.glob('xor.params'):
-		XOR_experiment.load('xor.params')
-	else:
-		XOR_model.in_size = 2
-		XOR_model.hidden_sizes = [20, 20]
-		XOR_model.out_size = 1
+    if glob.glob('xor.params'):
+        XOR_experiment.load('xor.params')
+    else:
+        XOR_model.in_size = 2
+        XOR_model.hidden_sizes = [20, 20]
+        XOR_model.out_size = 1
 
-		XOR_model.activation = 'relu'
+        XOR_model.activation = 'relu'
 
 
 
-		XOR_trainer.data_loc = './'
+        XOR_trainer.data_loc = './'
         XOR_trainer.load_checkpoint = True
 
         XOR_trainer.random_seed = 0
@@ -73,10 +73,10 @@ def get_hyperparams():
         XOR_trainer.save_period = 10
 
 if __name__ == '__main__':
-	create_xor_dataset()
-	setup_experiment()
-	get_hyperparams()
+    create_xor_dataset()
+    setup_experiment()
+    get_hyperparams()
 
-	XOR_experiment.train('xor')
+    XOR_experiment.train('xor')
 
-	XOR_experiment.save('xor')
+    XOR_experiment.save('xor')
