@@ -23,7 +23,8 @@ class TF_MLP_Model(Model):
             'activation': self.activation,
         }
 
-    def build_model(self):
+    def build_tf_model(self):
+        # tf_model should be of type tf.keras.Model
         if not hasattr(self, 'model'):
             layers = []
 
@@ -35,10 +36,8 @@ class TF_MLP_Model(Model):
                     layers.append(tf.keras.layers.Dense(self.out_size))
                 else:
                     layers.append(tf.keras.layers.Dense(self.hidden_sizes[layer]))
-            
-            self.model = tf.keras.Sequential(layers)
+
+            self.tf_model = tf.keras.Sequential(layers)
 
     def predict(self, input):
-        self.build_model()
-
-        return self.model.predict(input['feature'])
+        return self.tf_model.predict(input['feature'], steps=1)

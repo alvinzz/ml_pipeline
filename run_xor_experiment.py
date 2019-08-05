@@ -34,6 +34,7 @@ def xor_example_parser(example):
 
 # define experiment
 def setup_experiment():
+    # setup modules
     XOR_experiment = Experiment()
 
     XOR_model = TF_MLP_Model()
@@ -44,7 +45,7 @@ def setup_experiment():
     XOR_trainer.loss = mse_loss
     XOR_experiment.trainer = XOR_trainer
 
-def get_hyperparams():
+    # get hyperparams
     if glob.glob('xor.params'):
         XOR_experiment.load('xor.params')
     else:
@@ -57,7 +58,7 @@ def get_hyperparams():
 
 
         XOR_trainer.data_loc = './'
-        XOR_trainer.load_checkpoint = True
+        XOR_trainer.load_checkpoint = False
 
         XOR_trainer.random_seed = 0
         XOR_trainer.dataset_shuffle_buffer_size = 1000
@@ -72,10 +73,11 @@ def get_hyperparams():
         XOR_trainer.log_period = 10
         XOR_trainer.save_period = 10
 
+    return XOR_experiment
+
 if __name__ == '__main__':
     create_xor_dataset()
-    setup_experiment()
-    get_hyperparams()
+    XOR_experiment = setup_experiment()
 
     XOR_experiment.train('xor')
 

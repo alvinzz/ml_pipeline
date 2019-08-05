@@ -37,27 +37,31 @@ with tf.io.TFRecordWriter(record_file) as writer:
 
 
 #read
-with tf.device('/cpu:0'):
-    raw_image_dataset = tf.data.TFRecordDataset('xor.tfrecords')
+@tf.function
+def read():
+    with tf.device('/cpu:0'):
+        raw_image_dataset = tf.data.TFRecordDataset('xor.tfrecords')
 
-    # Create a dictionary describing the features.
-    feature_description = {
-        'x': tf.io.FixedLenFeature([2], tf.float32),
-        'y': tf.io.FixedLenFeature([], tf.float32),
-    }
-    def example_parser(example):
-      return tf.io.parse_single_example(example, feature_description)
+        # Create a dictionary describing the features.
+        feature_description = {
+            'x': tf.io.FixedLenFeature([2], tf.float32),
+            'y': tf.io.FixedLenFeature([], tf.float32),
+        }
+        def example_parser(example):
+          return tf.io.parse_single_example(example, feature_description)
 
-    dataset = tf.data.TFRecordDataset(filenames=['xor.tfrecords'])
-    dataset = dataset.repeat()
-    dataset = dataset.shuffle(buffer_size=4, seed=0)
-    dataset = dataset.map(example_parser)
-    dataset = dataset.batch(4)
-    dataset = dataset.prefetch(1)
-    batch = next(iter(dataset))
-    print(batch)
+        dataset = tf.data.TFRecordDataset(filenames=['xor.tfrecords'])
+        dataset = dataset.repeat()
+        dataset = dataset.shuffle(buffer_size=4, seed=0)
+        dataset = dataset.map(example_parser)
+        dataset = dataset.batch(4)
+        dataset = dataset.prefetch(1)
+        batch = next(iter(dataset))
 
+        for _ in range(100):
+            print(batch)
 
+read()
 
 # parsed_image_dataset = raw_image_dataset.map(_parse_image_function)
 

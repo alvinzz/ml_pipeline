@@ -1,6 +1,7 @@
 from trainer import Trainer
 
 import tensorflow as tf
+import numpy as np
 import glob
 
 class TF_Trainer(Trainer):
@@ -49,7 +50,7 @@ class TF_Trainer(Trainer):
         }
 
     def load_data(self):
-        if not hasattr(self, data):
+        if not hasattr(self, 'data'):
             filenames = glob.glob(self.data_loc + '*')
             with tf.device('/cpu:0'):
                 dataset = tf.data.TFRecordDataset(filenames=filenames)
@@ -70,6 +71,8 @@ class TF_Trainer(Trainer):
         if self.load_checkpoint:
             assert self.start_epoch != 0, "If loading from checkpoint, start_epoch should not be 0"
 
+        model.build_tf_model()
+
         np.random.seed(self.random_seed)
         tf.random.set_seed(self.random_seed)
 
@@ -77,10 +80,9 @@ class TF_Trainer(Trainer):
 
         self.optimizer = TF_Trainer.optimizer_type_dict[self.optimizer_type](self.learning_rate)
 
-        self.checkpoint = tf.train.Checkpoint(model=model)
+        self.checkpoint = tf.train.Checkpoint(model=model.tf_model)
         if self.load_checkpoint:
-            self.checkpoint.restore(log_dir + '/ckpt.{}'.format(self.start_epoch))
-        self.checkpoint.save_counter = self.start_epoch
+            self.checkpoint.restore(log_dir + '/ckpt-{}'.format(self.start_epoch))
 
         self.summary_writer = tf.summary.create_file_writer(log_dir + '/train_log')
         self.metrics = {
@@ -89,13 +91,13 @@ class TF_Trainer(Trainer):
             'optim_stepsize': tf.keras.metrics.Mean(name='optim_stepsize', dtype=tf.float32)
         }
 
-        with summary_writer.as_default():
+        with self.summary_writer.as_default():
             for epoch in range(self.start_epoch, self.start_epoch+self.n_epochs):
                 for data_batch in self.data:
                     self.train_step(model, data_batch)
                 
                 if (epoch + 1) % self.save_period == 0:
-                    self.checkpoint.save(file_prefix=(log_dir + '/ckpt'))
+                    self.checkpoint.save(file_prefix=(log_dir + '/ckpt-{}'.format(epoch)))
                 
                 if (epoch + 1) % self.log_period == 0:
                     for (metric_name, tf_metric) in self.metrics.items():
@@ -115,6 +117,6 @@ class TF_Trainer(Trainer):
         
         self.metrics['loss'].update_state(loss)
         self.metrics['grad_mag'].update_state(
-            tf.math.reduce_mean([tf.linalg.norm(gradient) for gradient in gradients])
+            tf.math.reduce_mean([tf.linalg.norm(gradient) for gradient in gradients]))
         self.metrics['optim_stepsize'].update_state(
-            tf.math.reduce_mean([tf.linalg.norm(weight) for weight in self.optimizer.weights])
+            tf.math.reduce_mean([tf.linalg.norm(weight) for weight in self.optimizer.weights]))
