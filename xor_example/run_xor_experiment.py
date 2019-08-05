@@ -17,12 +17,12 @@ def create_xor_dataset():
 
     def gen_example(x, y):
         feature = {
-          'feature': tf.train.Feature(float_list=tf.train.FloatList(value=x.tolist())),
-          'label': tf.train.Feature(float_list=tf.train.FloatList(value=y.tolist())),
+          "feature": tf.train.Feature(float_list=tf.train.FloatList(value=x.tolist())),
+          "label": tf.train.Feature(float_list=tf.train.FloatList(value=y.tolist())),
         }
         return tf.train.Example(features=tf.train.Features(feature=feature))
 
-    record_file = 'data/xor.tfrecords'
+    record_file = "data/xor.tfrecords"
     with tf.io.TFRecordWriter(record_file) as writer:
         for (_x, _y) in zip(x, y):
             example = gen_example(_x, _y)
@@ -30,8 +30,8 @@ def create_xor_dataset():
 
 def xor_example_parser(example):
     feature_description = {
-        'feature': tf.io.FixedLenFeature([2], tf.float32),
-        'label': tf.io.FixedLenFeature([1], tf.float32),
+        "feature": tf.io.FixedLenFeature([2], tf.float32),
+        "label": tf.io.FixedLenFeature([1], tf.float32),
     }
     return tf.io.parse_single_example(example, feature_description)
 
@@ -53,17 +53,17 @@ def setup_experiment():
     XOR_model.hidden_sizes = [20, 20, 20, 20]
     XOR_model.out_size = 1
 
-    XOR_model.activation = 'relu'
+    XOR_model.activation = "relu"
 
 
 
-    XOR_trainer.data_prefix = 'data/'
+    XOR_trainer.data_prefix = "data/"
     XOR_trainer.load_checkpoint = False
 
     XOR_trainer.random_seed = 0
     XOR_trainer.dataset_shuffle_buffer_size = 4
 
-    XOR_trainer.optimizer_type = 'Adam'
+    XOR_trainer.optimizer_type = "Adam"
     XOR_trainer.learning_rate = 0.01
 
     XOR_trainer.n_epochs = 1000
@@ -75,12 +75,12 @@ def setup_experiment():
 
     return XOR_experiment
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create_xor_dataset()
     XOR_experiment = setup_experiment()
-    #XOR_experiment.load('xor_2019_08_05_00_04_03/params')
+    #XOR_experiment.load("xor_2019_08_05_00_04_03/params")
 
-    XOR_experiment.set_name('xor')
+    XOR_experiment.set_name("xor")
 
     XOR_experiment.train()
 

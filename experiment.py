@@ -2,32 +2,31 @@ import os
 import datetime
 
 from parameter import Parameter
-from model import Model
-from trainer import Trainer
-from evaluator import Evaluator
 
 class Experiment(Parameter):
-    param_type = 'Experiment'
+    param_path = "experiment"
+    param_name = "Experiment"
 
     def __init__(self):
-        self.model = Model()
+        self.model = None
 
-        self.trainer = Trainer()
-        self.evaluator = Evaluator()
+        self.trainer = None
+        self.evaluator = None
 
     def update_parameters(self):
         self.params = {
-            'param_type': Experiment.param_type,
+            "param_path": Experiment.param_path,
+            "param_name": Experiment.param_name,
 
-            'model': self.model,
+            "model": self.model,
 
-            'trainer': self.trainer,
-            'evaluator': self.evaluator,
+            "trainer": self.trainer,
+            "evaluator": self.evaluator,
         }
 
     def set_name(self, name):
         currentDT = datetime.datetime.now()
-        self.name = name + '_' + currentDT.strftime("%Y_%m_%d_%H_%M_%S")
+        self.name = name + "_" + currentDT.strftime("%Y_%m_%d_%H_%M_%S")
         os.mkdir(self.name)
 
         self.trainer.exp_name = self.name

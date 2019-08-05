@@ -1,6 +1,6 @@
 import json
 import glob
-import datetime
+import importlib
 
 class Parameter(object):
     def __init__(self):
@@ -12,9 +12,8 @@ class Parameter(object):
 
     def save(self, log_dir):
         params = self.save_dict()
-        currentDT = datetime.datetime.now()
-        path = log_dir + '/' + 'params'
-        json.dump(params, open(path, 'w'), sort_keys=False, indent=2)
+        path = log_dir + "/params"
+        json.dump(params, open(path, "w"), sort_keys=False, indent=2)
 
     def save_dict(self):
         self.update_parameters()
@@ -27,13 +26,13 @@ class Parameter(object):
         return d
 
     def load(self, param_prefix):
-        prefix_match_files = glob.glob(param_prefix + '*')
+        prefix_match_files = glob.glob(param_prefix + "*")
         if not prefix_match_files:
             print("Could not find file with prefix {}".format(param_prefix))
             raise ValueError
         param_file = sorted(prefix_match_files)[-1]
         print("Loading param file {}...".format(param_file))
-        params = json.load(open(param_file, 'r'))
+        params = json.load(open(param_file, "r"))
         self.load_dict(params)
 
     def load_dict(self, d):
@@ -41,7 +40,10 @@ class Parameter(object):
             if type(value) != dict:
                 setattr(self, param, value)
             else:
-                sub_param = getattr(self, param)
+                sub_param_path = value["param_path"]
+                sub_param_name = value["param_name"]
+                sub_param_module = importlib.import_module(sub_param_path)
+                sub_param = getattr(sub_param_module, sub_param_name)()
                 assert isinstance(sub_param, Parameter), "sub-parameter {} of {} has dict of values but is not Parameter".format(sub_param, self)
                 sub_param.load_dict(value)
 

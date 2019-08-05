@@ -1,7 +1,8 @@
 from parameter import Parameter
 
 class Evaluator(Parameter):
-    param_type = 'Evaluator'
+    param_path = "evaluators.evaluator"
+    param_name = "Evaluator"
 
     def __init__(self):
         self.val_data_loc = None
@@ -9,10 +10,11 @@ class Evaluator(Parameter):
 
     def update_parameters(self):
         self.params = {
-            'param_type': Evaluator.param_type,
+            "param_path": Evaluator.param_path
+            "param_name": Evaluator.param_name,
         
-            'val_data_loc': self.val_data_loc,
-            'test_data_loc': self.test_data_loc,
+            "val_data_loc": self.val_data_loc,
+            "test_data_loc": self.test_data_loc,
         }
 
     def load_val_data(self):

@@ -1,16 +1,18 @@
 from parameter import Parameter
 
 class Trainer(Parameter):
-    param_type = 'Trainer'
+    param_path = "trainers.trainer"
+    param_name = "Trainer"
 
     def __init__(self):
         self.data_loc = None
 
     def update_parameters(self):
         self.params = {
-            'param_type': Trainer.param_type,
+            "param_path": Trainer.param_path,
+            "param_name": Trainer.param_name,
 
-            'data_loc': self.data_loc,
+            "data_loc": self.data_loc,
         }
 
     def load_data(self):

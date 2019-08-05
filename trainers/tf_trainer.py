@@ -5,20 +5,21 @@ import numpy as np
 import glob
 
 class TF_Trainer(Trainer):
-    param_type = 'TF_Trainer'
+    param_path = "trainers.tf_trainer"
+    param_name = "TF_Trainer"
 
     optimizer_type_dict = {
-        'Adam': tf.keras.optimizers.Adam,
+        "Adam": tf.keras.optimizers.Adam,
     }
 
     def __init__(self):
-        self.data_prefix = 'data'
+        self.data_prefix = "data"
         self.load_checkpoint = False
 
         self.random_seed = 0
         self.dataset_shuffle_buffer_size = 1000
 
-        self.optimizer_type = 'Adam'
+        self.optimizer_type = "Adam"
         self.learning_rate = 0.1
 
         self.n_epochs = 100
@@ -30,29 +31,30 @@ class TF_Trainer(Trainer):
 
     def update_parameters(self):
         self.params = {
-            'param_type': TF_Trainer.param_type,
+            "param_path": TF_Trainer.param_path,
+            "param_name": TF_Trainer.param_name,
 
-            'data_prefix': self.data_prefix,
-            'load_checkpoint': self.load_checkpoint,
+            "data_prefix": self.data_prefix,
+            "load_checkpoint": self.load_checkpoint,
 
-            'random_seed': self.random_seed,
-            'dataset_shuffle_buffer_size': self.dataset_shuffle_buffer_size,
+            "random_seed": self.random_seed,
+            "dataset_shuffle_buffer_size": self.dataset_shuffle_buffer_size,
 
-            'optimizer_type': self.optimizer_type,
-            'learning_rate': self.learning_rate,
+            "optimizer_type": self.optimizer_type,
+            "learning_rate": self.learning_rate,
 
-            'n_epochs': self.n_epochs,
-            'batch_size': self.batch_size,
+            "n_epochs": self.n_epochs,
+            "batch_size": self.batch_size,
 
-            'start_epoch': self.start_epoch,
-            'log_period': self.log_period,
-            'save_period': self.save_period,
+            "start_epoch": self.start_epoch,
+            "log_period": self.log_period,
+            "save_period": self.save_period,
         }
 
     def load_data(self):
-        if not hasattr(self, 'data'):
-            filenames = glob.glob(self.data_prefix + '*.tfrecords')
-            with tf.device('/cpu:0'):
+        if not hasattr(self, "data"):
+            filenames = glob.glob(self.data_prefix + "*.tfrecords")
+            with tf.device("/cpu:0"):
                 dataset = tf.data.TFRecordDataset(filenames=filenames)
                 dataset = dataset.shuffle(buffer_size=self.dataset_shuffle_buffer_size)
                 dataset = dataset.map(self.example_parser)
@@ -86,7 +88,7 @@ class TF_Trainer(Trainer):
                     self.train_step(model, data_batch)
 
                 if (epoch + 1) % self.save_period == 0:
-                    self.checkpoint.write(self.exp_name + '/ckpts/ckpt-{}'.format(epoch))
+                    self.checkpoint.write(self.exp_name + "/ckpts/ckpt-{}".format(epoch))
 
                 if (epoch + 1) % self.log_period == 0:
                     for (metric_name, tf_metric) in self.metrics.items():
@@ -94,20 +96,20 @@ class TF_Trainer(Trainer):
                         tf_metric.reset_states()
 
     def train_setup(self, model):
-        if not hasattr(self, 'optimizer'):
+        if not hasattr(self, "optimizer"):
             self.optimizer = TF_Trainer.optimizer_type_dict[self.optimizer_type](self.learning_rate)
 
-        if not hasattr(self, 'checkpoint'):
+        if not hasattr(self, "checkpoint"):
             self.checkpoint = tf.train.Checkpoint(model=model.tf_model)
         if self.load_checkpoint:
-            self.checkpoint.restore(self.exp_name + '/ckpts/ckpt-{}'.format(self.start_epoch - 1))
+            self.checkpoint.restore(self.exp_name + "/ckpts/ckpt-{}".format(self.start_epoch - 1))
 
-        if not hasattr(self, 'summary_writer'):
-            self.summary_writer = tf.summary.create_file_writer(self.exp_name + '/train_log')
-        if not hasattr(self, 'metrics'):
+        if not hasattr(self, "summary_writer"):
+            self.summary_writer = tf.summary.create_file_writer(self.exp_name + "/train_log")
+        if not hasattr(self, "metrics"):
             self.metrics = {
-                'loss': tf.keras.metrics.Mean(name='loss', dtype=tf.float32),
-                'avg_grad_mag': tf.keras.metrics.Mean(name='avg_grad_mag', dtype=tf.float32),
+                "loss": tf.keras.metrics.Mean(name="loss", dtype=tf.float32),
+                "avg_grad_mag": tf.keras.metrics.Mean(name="avg_grad_mag", dtype=tf.float32),
             }
 
     @tf.function
@@ -117,10 +119,10 @@ class TF_Trainer(Trainer):
             loss = self.get_loss(data_batch, model_pred)
         gradients = grad_tape.gradient(loss, model.tf_model.trainable_variables)
 
-        self.metrics['loss'].update_state(loss)
+        self.metrics["loss"].update_state(loss)
 
         grad_mag_sum = tf.reduce_sum(tf.stack([tf.reduce_sum(tf.abs(gradient)) for gradient in gradients]))
-        self.metrics['avg_grad_mag'].update_state(grad_mag_sum / tf.cast(self.n_model_params, tf.float32))
+        self.metrics["avg_grad_mag"].update_state(grad_mag_sum / tf.cast(self.n_model_params, tf.float32))
 
         self.optimizer.apply_gradients(zip(gradients, model.tf_model.trainable_variables))
 
