@@ -25,7 +25,7 @@ class TF_MLP_Model(Model):
 
     def build_tf_model(self):
         # tf_model should be of type tf.keras.Model
-        if not hasattr(self, 'model'):
+        if not hasattr(self, 'tf_model'):
             layers = []
 
             for layer in range(len(self.hidden_sizes) + 1):
@@ -40,4 +40,4 @@ class TF_MLP_Model(Model):
             self.tf_model = tf.keras.Sequential(layers)
 
     def predict(self, input):
-        return self.tf_model.predict(input['feature'], steps=1)
+        return self.tf_model(input['feature'])

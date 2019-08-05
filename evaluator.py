@@ -25,12 +25,12 @@ class Evaluator(Parameter):
             print("TODO: implement load_test_data method for Evaluator")
             raise NotImplementedError
 
-    def val(self, model, log_dir):
+    def val(self, model):
         self.load_val_data()
         print("TODO: implement val method for Evaluator")
         raise NotImplementedError
 
-    def test(self, model, log_dir):
+    def test(self, model):
         self.load_test_data()
         print("TODO: implement test method for Evaluator")
         raise NotImplementedError

@@ -9,7 +9,7 @@ class Trainer(Parameter):
     def update_parameters(self):
         self.params = {
             'param_type': Trainer.param_type,
-        
+
             'data_loc': self.data_loc,
         }
 
@@ -18,7 +18,7 @@ class Trainer(Parameter):
             print("TODO: implement load_data method for Trainer")
             raise NotImplementedError
 
-    def train(self, model, log_file):
+    def train(self, model):
         self.load_data()
         print("TODO: implement train method for Trainer")
         raise NotImplementedError

@@ -10,14 +10,14 @@ class Parameter(object):
         print("TODO: update self.params dict {param: value}")
         raise NotImplementedError
 
-    def save(self, name):
-        self.update_parameters()
+    def save(self, log_dir):
         params = self.save_dict()
         currentDT = datetime.datetime.now()
-        name += '_' + currentDT.strftime("%Y_%m_%d_%H_%M_%S") + '.params'
-        json.dump(params, open(name, 'w'), sort_keys=False, indent=2)
+        path = log_dir + '/' + 'params'
+        json.dump(params, open(path, 'w'), sort_keys=False, indent=2)
 
     def save_dict(self):
+        self.update_parameters()
         d = {}
         for (param, value) in self.params.items():
             if not isinstance(value, Parameter):
@@ -26,14 +26,13 @@ class Parameter(object):
                 d[param] = value.save_dict()
         return d
 
-    def load(self, param_file):
-        if not glob.glob(param_file):
-            matching_pref_files = glob.glob(param_file + '*')
-            if not matching_pref_files:
-                print("Could not find file with prefix {}".format(param_file))
-                raise ValueError
-            param_file = sorted(matching_pref_files)[-1]
-            print("Could not find {}, instead loading {}")
+    def load(self, param_prefix):
+        prefix_match_files = glob.glob(param_prefix + '*')
+        if not prefix_match_files:
+            print("Could not find file with prefix {}".format(param_prefix))
+            raise ValueError
+        param_file = sorted(prefix_match_files)[-1]
+        print("Loading param file {}...".format(param_file))
         params = json.load(open(param_file, 'r'))
         self.load_dict(params)
 

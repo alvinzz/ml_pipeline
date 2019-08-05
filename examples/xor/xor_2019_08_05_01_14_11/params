@@ -1,0 +1,34 @@
+{
+  "param_type": "Experiment",
+  "model": {
+    "param_type": "TF_MLP_Model",
+    "in_size": 2,
+    "hidden_sizes": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "out_size": 1,
+    "activation": "relu"
+  },
+  "trainer": {
+    "param_type": "TF_Trainer",
+    "data_prefix": "data/",
+    "load_checkpoint": false,
+    "random_seed": 0,
+    "dataset_shuffle_buffer_size": 4,
+    "optimizer_type": "Adam",
+    "learning_rate": 0.01,
+    "n_epochs": 1000,
+    "batch_size": 4,
+    "start_epoch": 0,
+    "log_period": 10,
+    "save_period": 100
+  },
+  "evaluator": {
+    "param_type": "Evaluator",
+    "val_data_loc": null,
+    "test_data_loc": null
+  }
+}

@@ -1,11 +1,14 @@
 import tensorflow as tf
 import numpy as np
 import glob
+import datetime
 
+import sys
+sys.path.append("..")
 from experiment import Experiment
 from tf_mlp_model import TF_MLP_Model
 from tf_trainer import TF_Trainer
-from tf_losses import mse_loss
+from tf_loss_fns import mse_loss_fn
 
 # create dataset & example parser
 def create_xor_dataset():
@@ -19,7 +22,7 @@ def create_xor_dataset():
         }
         return tf.train.Example(features=tf.train.Features(feature=feature))
 
-    record_file = 'xor.tfrecords'
+    record_file = 'data/xor.tfrecords'
     with tf.io.TFRecordWriter(record_file) as writer:
         for (_x, _y) in zip(x, y):
             example = gen_example(_x, _y)
@@ -42,43 +45,43 @@ def setup_experiment():
 
     XOR_trainer = TF_Trainer()
     XOR_trainer.example_parser = xor_example_parser
-    XOR_trainer.loss = mse_loss
+    XOR_trainer.get_loss = mse_loss_fn
     XOR_experiment.trainer = XOR_trainer
 
-    # get hyperparams
-    if glob.glob('xor.params'):
-        XOR_experiment.load('xor.params')
-    else:
-        XOR_model.in_size = 2
-        XOR_model.hidden_sizes = [20, 20]
-        XOR_model.out_size = 1
+    # set hyperparams
+    XOR_model.in_size = 2
+    XOR_model.hidden_sizes = [20, 20, 20, 20]
+    XOR_model.out_size = 1
 
-        XOR_model.activation = 'relu'
+    XOR_model.activation = 'relu'
 
 
 
-        XOR_trainer.data_loc = './'
-        XOR_trainer.load_checkpoint = False
+    XOR_trainer.data_prefix = 'data/'
+    XOR_trainer.load_checkpoint = False
 
-        XOR_trainer.random_seed = 0
-        XOR_trainer.dataset_shuffle_buffer_size = 1000
-        
-        XOR_trainer.optimizer_type = 'Adam'
-        XOR_trainer.learning_rate = 0.1
-        
-        XOR_trainer.n_epochs = 100
-        XOR_trainer.batch_size = 4
+    XOR_trainer.random_seed = 0
+    XOR_trainer.dataset_shuffle_buffer_size = 4
 
-        XOR_trainer.start_epoch = 0
-        XOR_trainer.log_period = 10
-        XOR_trainer.save_period = 10
+    XOR_trainer.optimizer_type = 'Adam'
+    XOR_trainer.learning_rate = 0.01
+
+    XOR_trainer.n_epochs = 1000
+    XOR_trainer.batch_size = 4
+
+    XOR_trainer.start_epoch = 0
+    XOR_trainer.log_period = 10
+    XOR_trainer.save_period = 100
 
     return XOR_experiment
 
 if __name__ == '__main__':
     create_xor_dataset()
     XOR_experiment = setup_experiment()
+    #XOR_experiment.load('xor_2019_08_05_00_04_03/params')
 
-    XOR_experiment.train('xor')
+    XOR_experiment.set_name('xor')
 
-    XOR_experiment.save('xor')
+    XOR_experiment.train()
+
+    XOR_experiment.save()
