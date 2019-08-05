@@ -1,12 +1,15 @@
 from parameter import Parameter
 
 class Model(Parameter):
-    def __init__(self):
-        super().__init__()
+    param_type = 'Model'
 
-    def init_parameters(self):
-        print("TODO: create self.params dict for Model")
-        raise NotImplementedError
+    def __init__(self):
+        pass
+
+    def update_parameters(self):
+        self.params = {
+            'param_type': Model.param_type,
+        }
 
     def predict(self, input):
         print("TODO: define predict method for Model")

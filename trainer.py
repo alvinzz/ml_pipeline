@@ -1,16 +1,17 @@
 from parameter import Parameter
 
 class Trainer(Parameter):
-    def __init__(self):
-        super().__init__()
+    param_type = 'Trainer'
 
-    def init_parameters(self):
-        print("TODO: create self.params dict for Trainer (data_loc, etc.)")
-        raise NotImplementedError
-        # self.data_loc = None
-        # self.params = {
-        #     'data_loc': self.data_loc,
-        # }
+    def __init__(self):
+        self.data_loc = None
+
+    def update_parameters(self):
+        self.params = {
+            'param_type': Trainer.param_type,
+        
+            'data_loc': self.data_loc,
+        }
 
     def load_data(self):
         if not hasattr(self, data):
