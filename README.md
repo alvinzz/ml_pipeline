@@ -102,6 +102,6 @@ Now, running `python run_xor_experiment.py` creates a new folder, which contains
 |       +-- ckpt-49.data-00000-of-00001
 ```
 
-Running TensorBoard shows that the model has now converged with the new hyper-parameters.
+Running TensorBoard (`tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS (new)/train_log/`) shows that the model has now converged with the new hyper-parameters.
 
 *Install with `pip install tensorflow==2.0.0-beta1` or `pip install tensorflow-gpu==2.0.0-beta1`.
