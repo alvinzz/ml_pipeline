@@ -65,7 +65,7 @@ def setup_experiment():
 
 3. Next, the `Experiment.train()` method calls `Trainer.train(Model)`, which trains the model using the hyper-parameters of the `Trainer`.
 
-4. Lastly, the `Experiment.save()` method then saves all of the hyper-parameters of the `Experiment` into a `params` file. This is stored under the `xor_YYYY_MM_DD_HH_MM_SS` folder, where the `"xor"` prefix was set by the `Experiment.set_exp_name` method.
+4. Lastly, the `Experiment.save()` method then saves all of the hyper-parameters of the `Experiment` into a `params` file. This is stored under the `xor_YYYY_MM_DD_HH_MM_SS` folder, where the `"xor"` prefix was set with the `Experiment.set_exp_name` method.
 
 After the experiment has finished running, your working directory should look like this:
 ```
