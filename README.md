@@ -36,6 +36,6 @@ XOR_experiment.load("last_params")
 ```
 . This creates a model and runs an experiment with the new hyper-parameters.
 
-Now, by running `python run_xor_experiment.py`, we will get a new folder of the format `xor_YYYY_MM_DD_HH_MM_SS`, which contains the parameters, logs, and checkpoints of the new experiment.
+Now, running `python run_xor_experiment.py` will create a new folder of the format `xor_YYYY_MM_DD_HH_MM_SS`, which contains the parameters, logs, and checkpoints of the new experiment. Running TensorBoard shows that the model has now converged with the new hyper-parameters.
 
 *Install with `pip install tensorflow==2.0.0-beta1` or `pip install tensorflow-gpu==2.0.0-beta1`.
