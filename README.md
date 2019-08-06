@@ -30,13 +30,38 @@ if __name__ == "__main__":
 
 Now, run `python run_xor_experiment.py`. 
 
-The `setup_experiment` function creates an `Experiment` object with `Model`, `Trainer`, and `Evaluator` attributes, which have further sub-attributes and hyper-parameters. See `run_xor_experiment.py` for further details. 
+First, the `setup_experiment()` function creates an `Experiment` object with `Model`, `Trainer`, and `Evaluator` attributes, which have further sub-attributes and hyper-parameters. See `run_xor_experiment.py` for further details. 
+```
+def setup_experiment():
+    # setup modules & hyperparameters
+    XOR_experiment = Experiment()
+    if True:
+        XOR_model = TF_MLP_Model()
+        if True:
+            XOR_model.in_size = 2
+            XOR_model.hidden_sizes = [20, 20, 20, 20]
+            XOR_model.out_size = 1
 
-The `Experiment.set_exp_name` method stores the `xor` string for logging purposes.
+            XOR_model.activation = "relu"
 
-The `Experiment.train` method calls `Trainer.train(Model)`, and trains the model using the hyper-parameters of the `Trainer`.
+        XOR_trainer = TF_Trainer()
+        if True:
+            ...
 
-The `Experiment.save` method then saves all of the hyper-parameters of the `Experiment` into a `params` file, under a `xor_YYYY_MM_DD_HH_MM_SS` folder.
+        XOR_evaluator = Evaluator()
+
+        XOR_experiment.model = XOR_model
+        XOR_experiment.trainer = XOR_trainer
+        XOR_experiment.evaluator = XOR_evaluator
+
+    return XOR_experiment
+```
+
+Then, the `Experiment.set_exp_name("xor")` method stores the `"xor"` string for logging purposes.
+
+Next, the `Experiment.train()` method calls `Trainer.train(Model)`, and trains the model using the hyper-parameters of the `Trainer`.
+
+Lastly, the `Experiment.save()` method then saves all of the hyper-parameters of the `Experiment` into a `params` file. This is stored under the `xor_YYYY_MM_DD_HH_MM_SS` folder, where the `"xor"` prefix was set by the `Experiment.set_exp_name` method.
 
 After the experiment has finished running, your working directory should look like this:
 ```
