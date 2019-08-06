@@ -12,7 +12,11 @@ class Parameter(object):
 
     def save(self, log_dir):
         params = self.save_dict()
+        # save in log_dir
         path = log_dir + "/params"
+        json.dump(params, open(path, "w"), sort_keys=False, indent=2)
+        # save copy in current dir
+        path = "last_params"
         json.dump(params, open(path, "w"), sort_keys=False, indent=2)
 
     def save_dict(self):
@@ -44,6 +48,7 @@ class Parameter(object):
                 sub_param_name = value["param_name"]
                 sub_param_module = importlib.import_module(sub_param_path)
                 sub_param = getattr(sub_param_module, sub_param_name)()
+                setattr(self, param, sub_param)
                 assert isinstance(sub_param, Parameter), "sub-parameter {} of {} has dict of values but is not Parameter".format(sub_param, self)
                 sub_param.load_dict(value)
 

@@ -1,4 +1,4 @@
-from model import Model
+from models.model import Model
 
 import tensorflow as tf
 
@@ -37,7 +37,8 @@ class TF_MLP_Model(Model):
                 elif layer == len(self.hidden_sizes):
                     layers.append(tf.keras.layers.Dense(self.out_size))
                 else:
-                    layers.append(tf.keras.layers.Dense(self.hidden_sizes[layer]))
+                    layers.append(tf.keras.layers.Dense(self.hidden_sizes[layer],
+                        activation=self.activation))
 
             self.tf_model = tf.keras.Sequential(layers)
 

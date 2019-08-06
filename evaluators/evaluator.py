@@ -10,9 +10,9 @@ class Evaluator(Parameter):
 
     def update_parameters(self):
         self.params = {
-            "param_path": Evaluator.param_path
+            "param_path": Evaluator.param_path,
             "param_name": Evaluator.param_name,
-        
+
             "val_data_loc": self.val_data_loc,
             "test_data_loc": self.test_data_loc,
         }

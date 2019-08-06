@@ -24,16 +24,16 @@ class Experiment(Parameter):
             "evaluator": self.evaluator,
         }
 
-    def set_name(self, name):
+    def set_exp_name(self, exp_name):
         currentDT = datetime.datetime.now()
-        self.name = name + "_" + currentDT.strftime("%Y_%m_%d_%H_%M_%S")
-        os.mkdir(self.name)
+        self.exp_name = exp_name + "_" + currentDT.strftime("%Y_%m_%d_%H_%M_%S")
+        os.mkdir(self.exp_name)
 
-        self.trainer.exp_name = self.name
-        self.evaluator.exp_name = self.name
+        self.trainer.exp_name = self.exp_name
+        self.evaluator.exp_name = self.exp_name
 
     def save(self):
-        super().save(self.name)
+        super().save(self.exp_name)
 
     def train(self):
         self.trainer.train(self.model)
