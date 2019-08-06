@@ -13,7 +13,6 @@ from trainers.tf_utils.optimizers import TF_Adam_Optimizer
 
 from xor_dataset_utils import create_xor_dataset, XOR_Example_Parser
 
-# define experiment
 def setup_experiment():
     # setup modules & hyperparameters
     XOR_experiment = Experiment()
@@ -66,10 +65,10 @@ if __name__ == "__main__":
     create_xor_dataset()
 
     # setup experiment for the first time
-    #XOR_experiment = setup_experiment()
+    XOR_experiment = setup_experiment()
     # restore experiment from a params file
-    XOR_experiment = Experiment()
-    XOR_experiment.load("last_params")
+    #XOR_experiment = Experiment()
+    #XOR_experiment.load("last_params")
 
     XOR_experiment.set_exp_name("xor")
 

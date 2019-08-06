@@ -81,14 +81,14 @@ class TF_Trainer(Trainer):
         self.train_setup(model) # create summary_writer, checkpoint, metrics
 
         with self.summary_writer.as_default():
-            for epoch in range(self.start_epoch, self.start_epoch+self.n_epochs):
+            for epoch in range(self.start_epoch, self.start_epoch + self.n_epochs):
                 for data_batch in self.data:
                     self.train_step(model, data_batch)
 
-                if (epoch + 1) % self.save_period == 0:
+                if (epoch + 1) % self.save_period == 0 or (epoch + 1) == (self.start_epoch + self.n_epochs):
                     self.checkpoint.write(self.exp_name + "/ckpts/ckpt-{}".format(epoch))
 
-                if (epoch + 1) % self.log_period == 0:
+                if (epoch + 1) % self.log_period == 0 or (epoch + 1) == (self.start_epoch + self.n_epochs):
                     for (metric_name, tf_metric) in self.metrics.items():
                         tf.summary.scalar(metric_name, tf_metric.result(), step=epoch)
                         tf_metric.reset_states()
