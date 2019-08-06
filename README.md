@@ -56,7 +56,7 @@ After the experiment has finished running, your working directory should look li
 The `last_params` file is a copy of the `xor_YYYY_MM_DD_HH_MM_SS/params` file, and is created for convenience.
 
 Running `tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS/train_log/` shows that training has been slow. 
-![exp1_loss](https://github.com/alvinzz/ml_pipeline/tree/master/doc_images/exp1_loss.png "exp1_loss")
+![exp1_loss](/doc_images/exp1_loss.png)
 
 In order to pick up training where we left off, with different hyper-parameters, execute the following steps:
 
@@ -131,6 +131,6 @@ Now, running `python run_xor_experiment.py` creates a new folder, which contains
 ```
 
 Running TensorBoard (`tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS (new)/train_log/`) shows that the model has now converged with the new hyper-parameters.
-![exp2_loss](https://github.com/alvinzz/ml_pipeline/tree/master/doc_images/exp2_loss.png "exp2_loss")
+![exp2_loss](/doc_images/exp2_loss.png)
 
 *Install with `pip install tensorflow==2.0.0-beta1` or `pip install tensorflow-gpu==2.0.0-beta1`.
