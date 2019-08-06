@@ -56,10 +56,38 @@ After the experiment has finished running, your working directory should look li
 The `last_params` file is a copy of the `xor_YYYY_MM_DD_HH_MM_SS/params` file, and is created for convenience.
 
 Running `tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS/train_log/` shows that training has been slow. 
+![exp1_loss](https://github.com/alvinzz/ml_pipeline/tree/master/doc_images/exp1_loss.png "exp1_loss")
 
 In order to pick up training where we left off, with different hyper-parameters, execute the following steps:
 
 First, edit `last_params`. Change `trainer/load_checkpoint_dir` to the `"xor_YYYY_MM_DD_HH_MM_SS/"` folder, `trainer/start_epoch` to `50`, and `trainer/optimizer/epsilon` to `1e-7`.
+```
+{
+  "param_path": "experiment",
+  "param_name": "Experiment",
+  "model": {
+    ...
+  },
+  "trainer": {
+    ...
+    "optimizer": {
+      "param_path": "trainers.tf_utils.optimizers",
+      "param_name": "TF_Adam_Optimizer",
+      "learning_rate": 0.01,
+      "epsilon": 0.1 => 1e-7
+    },
+    "load_checkpoint_dir": null => "xor_YYYY_MM_DD_HH_MM_SS/",
+    "start_epoch": 0 => 50,
+    "n_epochs": 50,
+    "batch_size": 4,
+    "log_period": 1,
+    "save_period": 50
+  },
+  "evaluator": {
+    ...
+  }
+}
+```
 
 Next, edit `run_xor_experiment.py`. Change lines 64-77 to:
 ```
@@ -103,5 +131,6 @@ Now, running `python run_xor_experiment.py` creates a new folder, which contains
 ```
 
 Running TensorBoard (`tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS (new)/train_log/`) shows that the model has now converged with the new hyper-parameters.
+![exp2_loss](https://github.com/alvinzz/ml_pipeline/tree/master/doc_images/exp2_loss.png "exp2_loss")
 
 *Install with `pip install tensorflow==2.0.0-beta1` or `pip install tensorflow-gpu==2.0.0-beta1`.
