@@ -8,34 +8,88 @@ export PYTHONPATH=$PYTHONPATH:{PATH_TO_ml_pipeline}
 cd xor_example
 ```
 
-For the first run, uncomment the line with 
-```
-XOR_experiment = setup_experiment()
-```
-in run_xor_experiment.py, and comment out the following lines:
-```
-XOR_experiment = Experiment()
-XOR_experiment.load("last_params")
-```
-`setup_experiment()` creates an Experiment with Model, Trainer, and Evaluator attributes, which have futher sub-attributers and hyper-parameters. See run_xor_experiment.py for further details.
+For our first experiment, we will be training a MLP on a toy XOR dataset.
 
-Then run `python run_xor_experiment.py`. This will train the model, and create a folder of the format `xor_YYYY_MM_DD_HH_MM_SS`. In this folder will be a `params` file, as well as folders for checkpoints (`ckpts`) and TensorBoard logging (`train_log`). It will also a save a copy of the `xor_YYYY_MM_DD_HH_MM_SS/params` file to `last_params` for convenience.
+First, make sure that lines 64-77 of `run_xor_experiment.py` appear as follows:
+```
+if __name__ == "__main__":
+    create_xor_dataset()
 
-Running `tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS/train_log/`, we find that training is slow. We can pick up where we left off, and try different hyper-parameters as follows.
+    # setup experiment for the first time
+    XOR_experiment = setup_experiment()
+    # restore experiment from a params file
+    #XOR_experiment = Experiment()
+    #XOR_experiment.load("last_params")
+
+    XOR_experiment.set_exp_name("xor")
+
+    XOR_experiment.train()
+
+    XOR_experiment.save()
+```
+
+Now, run `python run_xor_experiment.py`. 
+
+The `setup_experiment` function creates an `Experiment` object with `Model`, `Trainer`, and `Evaluator` attributes, which have further sub-attributes and hyper-parameters. See `run_xor_experiment.py` for further details. 
+
+The `Experiment.set_exp_name` method stores the `xor` string for logging purposes.
+
+The `Experiment.train` method calls `Trainer.train(Model)`, and trains the model using the hyper-parameters of the `Trainer`.
+
+The `Experiment.save` method then saves all of the hyper-parameters of the `Experiment` into a `params` file, under a `xor_YYYY_MM_DD_HH_MM_SS` folder.
+
+After the experiment has finished running, your working directory should look like this:
+```
+.
++-- run_xor_experiment.py
++-- xor_dataset_utils.py
++-- last_params
++-- xor_YYYY_MM_DD_HH_MM_SS
+|   +-- params
+|   +-- train_log
+|       +-- events.out.tfevents.*
+|   +-- ckpts
+|       +-- ckpt-49.index
+|       +-- ckpt-49.data-00000-of-00001
+```
+
+The `last_params` file is a copy of the `xor_YYYY_MM_DD_HH_MM_SS/params` file, and is created for convenience.
+
+Running `tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS/train_log/` shows that training has been slow. 
+
+In order to pick up training where we left off, with different hyper-parameters, execute the following steps:
 
 First, edit `last_params`. Change `trainer/load_checkpoint_dir` to the `"xor_YYYY_MM_DD_HH_MM_SS/"` folder, `trainer/start_epoch` to `50`, and `trainer/optimizer/epsilon` to `1e-7`.
 
-Next, edit `run_xor_experiment.py`. Comment out 
+Next, edit `run_xor_experiment.py`. Change lines 64-77 to:
 ```
-XOR_experiment = setup_experiment()
-```
-, and uncomment
-```
-XOR_experiment = Experiment()
-XOR_experiment.load("last_params")
-```
-. This creates a model and runs an experiment with the new hyper-parameters.
+if __name__ == "__main__":
+    create_xor_dataset()
 
-Now, running `python run_xor_experiment.py` will create a new folder of the format `xor_YYYY_MM_DD_HH_MM_SS`, which contains the parameters, logs, and checkpoints of the new experiment. Running TensorBoard shows that the model has now converged with the new hyper-parameters.
+    # setup experiment for the first time
+    #XOR_experiment = setup_experiment()
+    # restore experiment from a params file
+    XOR_experiment = Experiment()
+    XOR_experiment.load("last_params")
+
+    XOR_experiment.set_exp_name("xor")
+
+    XOR_experiment.train()
+
+    XOR_experiment.save()
+```
+This will run an experiment with the new hyper-parameters in `last_params`.
+
+Now, running `python run_xor_experiment.py` creates a new folder, which contains the `params`, logs, and checkpoints of the new experiment. 
+```
+.
++-- run_xor_experiment.py
++-- xor_dataset_utils.py
++-- last_params
++-- xor_YYYY_MM_DD_HH_MM_SS (old)
++-- xor_YYYY_MM_DD_HH_MM_SS (new)
+```
+
+Running TensorBoard shows that the model has now converged with the new hyper-parameters.
 
 *Install with `pip install tensorflow==2.0.0-beta1` or `pip install tensorflow-gpu==2.0.0-beta1`.
