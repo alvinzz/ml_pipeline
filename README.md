@@ -4,7 +4,8 @@ Pipeline for ML training that records (hyper-)parameters and allows restoring a 
 
 Example usage (requires TensorFlow 2.0)*:
 ```export PYTHONPATH=$PYTHONPATH:{PATH_TO_ml_pipeline}
-cd xor_example```
+cd xor_example
+```
 
 For the first run, uncomment the line with 
 `XOR_experiment = setup_experiment()`
