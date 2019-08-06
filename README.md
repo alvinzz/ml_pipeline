@@ -86,8 +86,20 @@ Now, running `python run_xor_experiment.py` creates a new folder, which contains
 +-- run_xor_experiment.py
 +-- xor_dataset_utils.py
 +-- last_params
-+-- xor_YYYY_MM_DD_HH_MM_SS (old)
 +-- xor_YYYY_MM_DD_HH_MM_SS (new)
+|   +-- params
+|   +-- train_log
+|       +-- events.out.tfevents.*
+|   +-- ckpts
+|       +-- ckpt-99.index
+|       +-- ckpt-99.data-00000-of-00001
++-- xor_YYYY_MM_DD_HH_MM_SS (old)
+|   +-- params
+|   +-- train_log
+|       +-- events.out.tfevents.*
+|   +-- ckpts
+|       +-- ckpt-49.index
+|       +-- ckpt-49.data-00000-of-00001
 ```
 
 Running TensorBoard shows that the model has now converged with the new hyper-parameters.
