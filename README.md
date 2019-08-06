@@ -40,7 +40,7 @@ The `Experiment.save` method then saves all of the hyper-parameters of the `Expe
 
 After the experiment has finished running, your working directory should look like this:
 ```
-.
+xor_example
 +-- run_xor_experiment.py
 +-- xor_dataset_utils.py
 +-- last_params
@@ -56,12 +56,14 @@ After the experiment has finished running, your working directory should look li
 The `last_params` file is a copy of the `xor_YYYY_MM_DD_HH_MM_SS/params` file, and is created for convenience.
 
 Running `tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS/train_log/` shows that training has been slow. 
+
 ![exp1_loss](/doc_images/exp1_loss.png)
 
 In order to pick up training where we left off, with different hyper-parameters, execute the following steps:
 
 First, edit `last_params`. Change `trainer/load_checkpoint_dir` to the `"xor_YYYY_MM_DD_HH_MM_SS/"` folder, `trainer/start_epoch` to `50`, and `trainer/optimizer/epsilon` to `1e-7`.
 ```
+last_params
 {
   "param_path": "experiment",
   "param_name": "Experiment",
@@ -131,6 +133,7 @@ Now, running `python run_xor_experiment.py` creates a new folder, which contains
 ```
 
 Running TensorBoard (`tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS (new)/train_log/`) shows that the model has now converged with the new hyper-parameters.
+
 ![exp2_loss](/doc_images/exp2_loss.png)
 
 *Install with `pip install tensorflow==2.0.0-beta1` or `pip install tensorflow-gpu==2.0.0-beta1`.
