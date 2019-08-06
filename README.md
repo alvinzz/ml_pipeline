@@ -8,9 +8,11 @@ export PYTHONPATH=$PYTHONPATH:{PATH_TO_ml_pipeline}
 cd xor_example
 ```
 
-For our first experiment, we will be training a MLP on a toy XOR dataset.
+In this example, we will be training a MLP on a toy XOR dataset.
 
-First, make sure that lines 64-77 of `run_xor_experiment.py` appear as follows:
+To run our first experiment, follow these steps:
+
+1. Make sure that lines 64-77 of `run_xor_experiment.py` appear as follows:
 ```
 if __name__ == "__main__":
     create_xor_dataset()
@@ -28,9 +30,11 @@ if __name__ == "__main__":
     XOR_experiment.save()
 ```
 
-Now, run `python run_xor_experiment.py`. 
+2. Run `python run_xor_experiment.py`. 
 
-First, the `setup_experiment()` function creates an `Experiment` object with `Model`, `Trainer`, and `Evaluator` attributes, which have further sub-attributes and hyper-parameters. See `run_xor_experiment.py` for further details. 
+Let's dive into what is happening here.
+
+1. First, the `setup_experiment()` function creates an `Experiment` object with `Model`, `Trainer`, and `Evaluator` attributes, which have further sub-attributes and hyper-parameters. See `run_xor_experiment.py` for further details. 
 ```
 def setup_experiment():
     # setup modules & hyperparameters
@@ -57,11 +61,11 @@ def setup_experiment():
     return XOR_experiment
 ```
 
-Then, the `Experiment.set_exp_name("xor")` method stores the `"xor"` string for logging purposes.
+2. Then, the `Experiment.set_exp_name("xor")` method stores the `"xor"` string for logging purposes.
 
-Next, the `Experiment.train()` method calls `Trainer.train(Model)`, and trains the model using the hyper-parameters of the `Trainer`.
+3. Next, the `Experiment.train()` method calls `Trainer.train(Model)`, which trains the model using the hyper-parameters of the `Trainer`.
 
-Lastly, the `Experiment.save()` method then saves all of the hyper-parameters of the `Experiment` into a `params` file. This is stored under the `xor_YYYY_MM_DD_HH_MM_SS` folder, where the `"xor"` prefix was set by the `Experiment.set_exp_name` method.
+4. Lastly, the `Experiment.save()` method then saves all of the hyper-parameters of the `Experiment` into a `params` file. This is stored under the `xor_YYYY_MM_DD_HH_MM_SS` folder, where the `"xor"` prefix was set by the `Experiment.set_exp_name` method.
 
 After the experiment has finished running, your working directory should look like this:
 ```
@@ -84,9 +88,9 @@ Running `tensorboard --logdir xor_YYYY_MM_DD_HH_MM_SS/train_log/` shows that tra
 
 ![exp1_loss](/doc_images/exp1_loss.png)
 
-In order to pick up training where we left off, with different hyper-parameters, execute the following steps:
+In order to pick up training where we left off, with different hyper-parameters, follow these steps:
 
-First, edit `last_params`. Change `trainer/load_checkpoint_dir` to the `"xor_YYYY_MM_DD_HH_MM_SS/"` folder, `trainer/start_epoch` to `50`, and `trainer/optimizer/epsilon` to `1e-7`.
+1. First, edit `last_params`. Change `trainer/load_checkpoint_dir` to the `"xor_YYYY_MM_DD_HH_MM_SS/"` folder, `trainer/start_epoch` to `50`, and `trainer/optimizer/epsilon` to `1e-7`.
 ```
 last_params
 {
@@ -116,7 +120,7 @@ last_params
 }
 ```
 
-Next, edit `run_xor_experiment.py`. Change lines 64-77 to:
+2. Next, edit `run_xor_experiment.py`. Change lines 64-77 to:
 ```
 if __name__ == "__main__":
     create_xor_dataset()
@@ -133,11 +137,10 @@ if __name__ == "__main__":
 
     XOR_experiment.save()
 ```
-This will run an experiment with the new hyper-parameters in `last_params`.
 
-Now, running `python run_xor_experiment.py` creates a new folder, which contains the `params`, logs, and checkpoints of the new experiment. 
+3. Now, running `python run_xor_experiment.py` will run an experiment with the new hyper-parameters in `last_params`. It also creates a new folder, which contains the `params`, logs, and checkpoints of the new experiment. 
 ```
-.
+xor_example
 +-- run_xor_experiment.py
 +-- xor_dataset_utils.py
 +-- last_params
